@@ -22,8 +22,8 @@ export default function ProfileScreen() {
           Platform.OS !== 'ios' && { backgroundColor: theme.dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
         ]} glassEffectStyle="regular">
           <IconSymbol name="person.circle.fill" size={80} color={theme.colors.primary} />
-          <Text style={[styles.name, { color: theme.colors.text }]}>John Doe</Text>
-          <Text style={[styles.email, { color: theme.dark ? '#98989D' : '#666' }]}>john.doe@example.com</Text>
+          <Text style={[styles.name, { color: theme.colors.text }]}>Nhat Truong Pham</Text>
+          <Text style={[styles.email, { color: theme.dark ? '#98989D' : '#666' }]}>truong.231199@gmail.com</Text>
         </GlassView>
 
         <GlassView style={[
@@ -32,11 +32,11 @@ export default function ProfileScreen() {
         ]} glassEffectStyle="regular">
           <View style={styles.infoRow}>
             <IconSymbol name="phone.fill" size={20} color={theme.dark ? '#98989D' : '#666'} />
-            <Text style={[styles.infoText, { color: theme.colors.text }]}>+1 (555) 123-4567</Text>
+            <Text style={[styles.infoText, { color: theme.colors.text }]}>+61 481 777 003</Text>
           </View>
           <View style={styles.infoRow}>
             <IconSymbol name="location.fill" size={20} color={theme.dark ? '#98989D' : '#666'} />
-            <Text style={[styles.infoText, { color: theme.colors.text }]}>San Francisco, CA</Text>
+            <Text style={[styles.infoText, { color: theme.colors.text }]}>Delahey, VIC</Text>
           </View>
         </GlassView>
       </ScrollView>
