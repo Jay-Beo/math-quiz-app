@@ -1,14 +1,18 @@
 import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
 export const colors = {
-  primary: '#162456',    // Material Blue
-  secondary: '#193cb8',  // Darker Blue
-  accent: '#64B5F6',     // Light Blue
-  background: '#101824',  // Keeping dark background
-  backgroundAlt: '#162133',  // Keeping dark background
-  text: '#e3e3e3',       // Keeping light text
-  grey: '#90CAF9',       // Light Blue Grey
-  card: '#193cb8',       // Keeping dark card background
+  background: '#F5F5DC',      // Beige
+  text: '#333333',            // Dark Gray
+  textSecondary: '#777777',   // Medium Gray
+  primary: '#007BFF',         // Blue
+  secondary: '#6C757D',       // Gray
+  accent: '#28A745',          // Green
+  card: '#FFFFFF',            // White
+  // Highlight Colors for answer choices
+  answerRed: '#FF4136',       // Red
+  answerOrange: '#FF851B',    // Orange
+  answerGreen: '#2ECC40',     // Green
+  answerBlue: '#0074D9',      // Blue
 };
 
 export const buttonStyles = StyleSheet.create({
