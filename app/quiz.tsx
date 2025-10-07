@@ -35,43 +35,87 @@ export default function QuizScreen() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
 
-  // Generate random math questions
+  // Generate random math questions with increased difficulty
   const generateQuestion = useCallback((): Question => {
-    const operations = ['+', '-', '*'];
+    const operations = ['+', '-', '*', '/', '^', 'multi'];
     const operation = operations[Math.floor(Math.random() * operations.length)];
     
-    let num1: number, num2: number, correctAnswer: number;
+    let num1: number, num2: number, correctAnswer: number, questionText: string;
     
     switch (operation) {
       case '+':
-        num1 = Math.floor(Math.random() * 50) + 1;
-        num2 = Math.floor(Math.random() * 50) + 1;
+        // Larger numbers for addition
+        num1 = Math.floor(Math.random() * 150) + 50;
+        num2 = Math.floor(Math.random() * 150) + 50;
         correctAnswer = num1 + num2;
+        questionText = `${num1} + ${num2} = ?`;
         break;
       case '-':
-        num1 = Math.floor(Math.random() * 50) + 25;
-        num2 = Math.floor(Math.random() * 25) + 1;
+        // Larger numbers for subtraction
+        num1 = Math.floor(Math.random() * 200) + 100;
+        num2 = Math.floor(Math.random() * 100) + 25;
         correctAnswer = num1 - num2;
+        questionText = `${num1} - ${num2} = ?`;
         break;
       case '*':
-        num1 = Math.floor(Math.random() * 12) + 1;
-        num2 = Math.floor(Math.random() * 12) + 1;
+        // Larger multiplication
+        num1 = Math.floor(Math.random() * 25) + 5;
+        num2 = Math.floor(Math.random() * 15) + 3;
         correctAnswer = num1 * num2;
+        questionText = `${num1} × ${num2} = ?`;
+        break;
+      case '/':
+        // Division with whole number results
+        correctAnswer = Math.floor(Math.random() * 20) + 5;
+        num2 = Math.floor(Math.random() * 8) + 2;
+        num1 = correctAnswer * num2;
+        questionText = `${num1} ÷ ${num2} = ?`;
+        break;
+      case '^':
+        // Simple exponents
+        num1 = Math.floor(Math.random() * 8) + 2;
+        num2 = Math.floor(Math.random() * 3) + 2;
+        correctAnswer = Math.pow(num1, num2);
+        questionText = `${num1}² = ?`;
+        if (num2 === 3) questionText = `${num1}³ = ?`;
+        break;
+      case 'multi':
+        // Multi-step problems
+        const a = Math.floor(Math.random() * 10) + 2;
+        const b = Math.floor(Math.random() * 10) + 2;
+        const c = Math.floor(Math.random() * 5) + 1;
+        correctAnswer = (a + b) * c;
+        questionText = `(${a} + ${b}) × ${c} = ?`;
         break;
       default:
         num1 = 1;
         num2 = 1;
         correctAnswer = 2;
+        questionText = '1 + 1 = ?';
     }
 
-    // Generate wrong answers
+    // Generate wrong answers with better distribution
     const wrongAnswers: number[] = [];
     while (wrongAnswers.length < 3) {
       let wrongAnswer: number;
-      if (operation === '*') {
-        wrongAnswer = correctAnswer + Math.floor(Math.random() * 20) - 10;
+      
+      if (operation === '^' || operation === 'multi') {
+        // For complex operations, create more realistic wrong answers
+        const variance = Math.max(Math.floor(correctAnswer * 0.3), 10);
+        wrongAnswer = correctAnswer + Math.floor(Math.random() * variance * 2) - variance;
+      } else if (operation === '/') {
+        // For division, create answers that might result from common mistakes
+        const commonMistakes = [
+          correctAnswer + 1,
+          correctAnswer - 1,
+          Math.floor(correctAnswer * 1.5),
+          Math.floor(correctAnswer / 2)
+        ];
+        wrongAnswer = commonMistakes[Math.floor(Math.random() * commonMistakes.length)];
       } else {
-        wrongAnswer = correctAnswer + Math.floor(Math.random() * 40) - 20;
+        // For basic operations, use percentage-based variance
+        const variance = Math.max(Math.floor(correctAnswer * 0.4), 15);
+        wrongAnswer = correctAnswer + Math.floor(Math.random() * variance * 2) - variance;
       }
       
       if (wrongAnswer !== correctAnswer && !wrongAnswers.includes(wrongAnswer) && wrongAnswer > 0) {
@@ -83,7 +127,7 @@ export default function QuizScreen() {
     const options = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
 
     return {
-      question: `${num1} ${operation} ${num2} = ?`,
+      question: questionText,
       correctAnswer,
       options,
     };
@@ -226,11 +270,12 @@ export default function QuizScreen() {
         />
         <View style={styles.startScreen}>
           <Text style={styles.title}>🧮 Math Quiz Challenge</Text>
-          <Text style={styles.subtitle}>Test your quick calculation skills!</Text>
+          <Text style={styles.subtitle}>Test your advanced calculation skills!</Text>
           
           <View style={styles.instructionsCard}>
             <Text style={styles.instructionTitle}>How to Play:</Text>
-            <Text style={styles.instruction}>• Answer 10 math questions</Text>
+            <Text style={styles.instruction}>• Answer 10 challenging math questions</Text>
+            <Text style={styles.instruction}>• Includes: +, -, ×, ÷, exponents, multi-step</Text>
             <Text style={styles.instruction}>• Each question has 15 seconds</Text>
             <Text style={styles.instruction}>• Correct answer: +100 points + time bonus</Text>
             <Text style={styles.instruction}>• Wrong answer: -25 points</Text>
@@ -318,12 +363,29 @@ export default function QuizScreen() {
         />
       </View>
 
-      {/* Question */}
+      {/* Question - moved below timer bar */}
       <View style={styles.questionContainer}>
         <Text style={styles.questionText}>{currentQ.question}</Text>
       </View>
 
-      {/* Answer options */}
+      {/* Result feedback - moved higher */}
+      {showResult && (
+        <View style={styles.resultContainer}>
+          <Text style={[
+            styles.resultText,
+            { color: selectedAnswer === currentQ.correctAnswer ? colors.answerGreen : colors.answerRed }
+          ]}>
+            {selectedAnswer === currentQ.correctAnswer ? '✅ Correct!' : '❌ Wrong!'}
+          </Text>
+          {selectedAnswer === currentQ.correctAnswer && (
+            <Text style={styles.bonusText}>
+              +{POINTS_CORRECT + Math.floor(timeLeft * 2)} points
+            </Text>
+          )}
+        </View>
+      )}
+
+      {/* Answer options - moved higher */}
       <View style={styles.answersContainer}>
         {currentQ.options.map((option, index) => (
           <Pressable
@@ -342,23 +404,6 @@ export default function QuizScreen() {
           </Pressable>
         ))}
       </View>
-
-      {/* Result feedback */}
-      {showResult && (
-        <View style={styles.resultContainer}>
-          <Text style={[
-            styles.resultText,
-            { color: selectedAnswer === currentQ.correctAnswer ? colors.answerGreen : colors.answerRed }
-          ]}>
-            {selectedAnswer === currentQ.correctAnswer ? '✅ Correct!' : '❌ Wrong!'}
-          </Text>
-          {selectedAnswer === currentQ.correctAnswer && (
-            <Text style={styles.bonusText}>
-              +{POINTS_CORRECT + Math.floor(timeLeft * 2)} points
-            </Text>
-          )}
-        </View>
-      )}
     </SafeAreaView>
   );
 }
@@ -476,7 +521,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E0E0E0',
     marginHorizontal: 20,
     borderRadius: 2,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   progressBar: {
     height: '100%',
@@ -484,38 +529,21 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   questionContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingHorizontal: 20,
+    paddingVertical: 20,
+    alignItems: 'center',
+    marginBottom: 20,
   },
   questionText: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
     color: colors.text,
     textAlign: 'center',
   },
-  answersContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  answerButton: {
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    marginBottom: 12,
-    alignItems: 'center',
-    boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.15)',
-    elevation: 3,
-  },
-  answerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-  },
   resultContainer: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 15,
+    marginBottom: 20,
   },
   resultText: {
     fontSize: 24,
@@ -526,6 +554,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.accent,
     fontWeight: '600',
+  },
+  answersContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    justifyContent: 'flex-start',
+  },
+  answerButton: {
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    marginBottom: 15,
+    alignItems: 'center',
+    boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.15)',
+    elevation: 3,
+  },
+  answerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
   },
   finalScore: {
     fontSize: 28,
