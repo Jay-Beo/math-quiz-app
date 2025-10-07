@@ -369,21 +369,23 @@ export default function QuizScreen() {
       </View>
 
       {/* Result feedback - moved higher */}
-      {showResult && (
-        <View style={styles.resultContainer}>
-          <Text style={[
-            styles.resultText,
-            { color: selectedAnswer === currentQ.correctAnswer ? colors.answerGreen : colors.answerRed }
-          ]}>
-            {selectedAnswer === currentQ.correctAnswer ? '✅ Correct!' : '❌ Wrong!'}
-          </Text>
-          {selectedAnswer === currentQ.correctAnswer && (
-            <Text style={styles.bonusText}>
-              +{POINTS_CORRECT + Math.floor(timeLeft * 2)} points
-            </Text>
-          )}
-        </View>
+<View style={styles.resultContainer}>
+  {showResult && (
+    <>
+      <Text style={[
+        styles.resultText,
+        { color: selectedAnswer === currentQ.correctAnswer ? colors.answerGreen : colors.answerRed }
+      ]}>
+        {selectedAnswer === currentQ.correctAnswer ? '✅ Correct!' : '❌ Wrong!'}
+      </Text>
+      {selectedAnswer === currentQ.correctAnswer && (
+        <Text style={styles.bonusText}>
+          +{POINTS_CORRECT + Math.floor(timeLeft * 2)} points
+        </Text>
       )}
+    </>
+  )}
+</View>
 
       {/* Answer options - moved higher */}
       <View style={styles.answersContainer}>
@@ -541,6 +543,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   resultContainer: {
+    height: 80,
+    justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 15,
     marginBottom: 20,
