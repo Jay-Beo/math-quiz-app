@@ -8,7 +8,7 @@ A feature-rich mobile application built with React Native and Expo, showcasing m
 
 
 
-## ## Key Features
+## Key Features
 
 This app demonstrates a variety of modern mobile development features:
 
@@ -19,7 +19,7 @@ This app demonstrates a variety of modern mobile development features:
 * **🧭 File-Based Routing**: Built with **Expo Router**, the latest and most powerful routing solution for Expo apps.
 * **📴 Offline Detection**: Notifies the user when their network connection is lost, ensuring they know their progress is saved locally.
 
-## ## Technologies Used
+## Technologies Used
 
 * **Framework**: React Native
 * **Platform**: Expo
