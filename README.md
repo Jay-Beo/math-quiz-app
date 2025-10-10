@@ -27,7 +27,7 @@ This app demonstrates a variety of modern mobile development features:
 * **Navigation**: Expo Router
 * **Deployment**: Vercel
 
-## ## How to Run Locally
+## How to Run Locally
 
 To run this project on your own machine, follow these steps:
 
